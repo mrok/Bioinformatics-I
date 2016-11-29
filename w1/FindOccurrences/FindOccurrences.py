@@ -1,9 +1,8 @@
 import sys
 import os
-from collections import Counter
 
 
-def find_occurences(genome, pattern):
+def find_occurrences(genome, pattern):
     positions = []
 
     for i in range(0, (len(genome) - len(pattern) + 1)):
@@ -21,5 +20,5 @@ if __name__ == "__main__":
     genome = file.readline().strip()
     argv = [pattern, genome]
 
-    result = find_occurences(argv[1], argv[0])
+    result = find_occurrences(argv[1], argv[0])
     print(' '.join([str(x) for x in result]))
