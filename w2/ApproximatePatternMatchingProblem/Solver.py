@@ -14,7 +14,7 @@ def calc_hamming_distance(word1, word2):
     return distance
 
 
-def find_patter_with_mismatch(genome, pattern, d):
+def find_patterns_with_mismatch(genome, pattern, d):
     result = []
     pattern_len = len(pattern)
     for i in range(0, len(genome) - pattern_len + 1):
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     d = file.readline().strip()
 
     argv = [pattern, genome, d]
-    result = find_patter_with_mismatch(argv[1], argv[0], int(argv[2]))
+    result = find_patterns_with_mismatch(argv[1], argv[0], int(argv[2]))
     result = map(str, result)
     result = ' '.join(result)
     print(result)
