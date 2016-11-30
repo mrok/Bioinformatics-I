@@ -19,7 +19,7 @@ def calc_hamming_distance(word1, word2):
 
 def find_neighbors(pattern, d):
     if d == 0:
-        return pattern
+        return [pattern]
     if len(pattern) == 1:
         return NUCLEOTIDES
 
