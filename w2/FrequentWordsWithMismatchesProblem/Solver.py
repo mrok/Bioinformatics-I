@@ -22,7 +22,7 @@ def calc_hamming_distance(word1, word2):
 
 def find_neighbors(pattern, d):
     if d == 0:
-        return pattern
+        return [pattern]
     if len(pattern) == 1:
         return NUCLEOTIDES
 
@@ -38,42 +38,52 @@ def find_neighbors(pattern, d):
 
     return result
 
-# solution of the problem
 
+def find_patterns_with_mismatch(genome, pattern, d):
+    result = []
+    pattern_len = len(pattern)
+    for i in range(0, len(genome) - pattern_len + 1):
+        box = genome[i: i + pattern_len]
+        if calc_hamming_distance(box, pattern) <= d:
+            result.append(i)
 
-def group_genome_words(genome, k):
-    words = {}
+    return result
+
+# problem solution
+
+def extraxt_kmers(genome, k):
+    patterns = []
     for i in range(0, len(genome) - k + 1):
         box = genome[i: i + k]
-        words[box] = words.get(box, 0) + 1
+        patterns.append(box)
 
-    return words
+    return list(set(patterns))
 
 
-def count_box_occurences_with_mismatch(words, pattern, d):
-    neighbors = find_neighbors(pattern, d)
-    occurences = 0
-    for neighbor in neighbors:
-        occurences += words.get(neighbor, 0)
+def add_patterns_neighbors(patterns, d):
+    result = list(patterns)
+    for pattern in patterns:
+        result.extend(find_neighbors(pattern, d))
 
-    return occurences
+    return list(set(result))
 
 
 def find_frequent_word_with_mismatch(genome, k, d):
-    # lets group all words from genome first
-    words = group_genome_words(genome, k)
+    # lets group all kmers from genome into patterns
+    patterns = extraxt_kmers(genome, k)
+    patterns_with_neighbors = add_patterns_neighbors(patterns, d)
 
-    result = []
+    result = {}
     max_occurences = 0
-    for pattern, amount in words.items():
-        occurences = count_box_occurences_with_mismatch(words, pattern, d)
-
-        if occurences == max_occurences:
-            result.append(pattern)
+    for pattern in patterns_with_neighbors:
+        occurences = len(find_patterns_with_mismatch(genome, pattern, d))
 
         if occurences > max_occurences:
-            result = [pattern]
+            result = {}
             max_occurences = occurences
+
+        if max_occurences == occurences:
+            result[pattern] = occurences
 
     return result
 
