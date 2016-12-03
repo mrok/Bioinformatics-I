@@ -49,7 +49,6 @@ def find_patterns_with_mismatch(genome, pattern, d):
 
     return result
 
-# problem solution
 
 def extrakt_kmers(genome, k):
     patterns = []
@@ -68,24 +67,53 @@ def add_patterns_neighbors(patterns, d):
     return list(set(result))
 
 
-def find_frequent_word_with_mismatch(genome, k, d):
+def find_complamentary(genome):
+    reverse_table = {
+        'A': 'T',
+        'T': 'A',
+        'C': 'G',
+        'G': 'C'
+    }
+
+    complementary_string = ''
+    for i in range(0, len(genome)):
+        complementary_string = complementary_string + \
+            reverse_table.get(genome[i])
+
+    complementary_string = complementary_string[::-1]
+
+    return complementary_string
+
+# problem solution
+
+
+def find_word_with_mismatch(genome, k, d):
     # lets group all kmers from genome into patterns
     patterns = extrakt_kmers(genome, k)
     patterns_with_neighbors = add_patterns_neighbors(patterns, d)
 
     result = {}
-    max_occurences = 0
     for pattern in patterns_with_neighbors:
         occurences = len(find_patterns_with_mismatch(genome, pattern, d))
-
-        if occurences > max_occurences:
-            result = {}
-            max_occurences = occurences
-
-        if max_occurences == occurences:
-            result[pattern] = occurences
+        result[pattern] = occurences
 
     return result
+
+
+def find_frequent_word_with_mismatch_and_reverse(genome, k, d):
+    result1 = find_word_with_mismatch(genome, k, d)
+    complamantary_strand = find_complamentary(genome)
+    result2 = find_word_with_mismatch(complamantary_strand, k, d)
+
+    # time to merge results
+    for pattern, occurence in result2.items():
+          result1[pattern] = result1.get(pattern, 0) + occurence
+
+    maximum = max(result1.values())            
+    result = [pattern for pattern, value in result1.items() if value == maximum]
+    
+    return result
+
 
 if __name__ == "__main__":
     # argv = sys.stdin.read().splitlines()
@@ -97,7 +125,7 @@ if __name__ == "__main__":
     k, d = file.readline().strip().split(' ')
 
     argv = [genome, k, d]
-    result = find_frequent_word_with_mismatch(
+    result = find_frequent_word_with_mismatch_and_reverse(
         argv[0], int(argv[1]), int(argv[2]))
 
     result = ' '.join(map(str, result))
