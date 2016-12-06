@@ -6,11 +6,11 @@ import functools
 NUCLEOTIDES = ('A', 'C', 'G', 'T')
 
 
-def convert_input_to_profile(lines):
+def convert_input_to_profile(strands):
     profile = {}
     row = 0
     for nucleotide in NUCLEOTIDES:
-        profile[nucleotide] = [float(val) for val in lines[row].split(' ')]
+        profile[nucleotide] = [float(val) for val in strands[row].split(' ')]
         row += 1
 
     return profile
