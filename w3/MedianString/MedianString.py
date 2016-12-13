@@ -60,6 +60,26 @@ def find_median_string(k, dnas):
     return median
 
 
+def find_all_median_string(k, dnas):
+    distance = float("inf")
+    patterns = itertools.product('ACGT', repeat=k)
+    medians = []
+
+    for pattern in patterns:
+        pattern = ''.join(pattern)
+        current_distance = calc_hamming_distance_from_many_words(pattern, dnas)
+
+        if distance == current_distance:
+            medians.append(pattern)            
+
+        if distance > current_distance:
+            distance = current_distance
+            medians = [pattern]
+
+
+    return ' '.join(medians)
+
+
 if __name__ == "__main__":
     script_directory = os.path.dirname(os.path.realpath(__file__))
     file = open(script_directory + '/data.txt', 'r')
@@ -69,5 +89,5 @@ if __name__ == "__main__":
     k = int(lines[0].strip())
     dnas = [dna.strip() for dna in lines[1:]]
 
-    result = find_median_string(k, dnas)
+    result = find_all_median_string(k, dnas)
     print(result)
